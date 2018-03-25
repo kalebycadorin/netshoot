@@ -23,6 +23,7 @@ RUN set -ex \
     nmap \
     nmap-nping \
     conntrack-tools \
+    bind-tools \
     socat
 # apparmor issue #14140
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
