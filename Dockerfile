@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.9
 
 RUN set -ex \
     && echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
@@ -22,6 +22,7 @@ RUN set -ex \
     iftop \
     iperf \
     iproute2 \
+    ipset \
     iptables \
     iptraf-ng \
     iputils \
@@ -31,9 +32,11 @@ RUN set -ex \
     mtr \
     net-snmp-tools \
     netcat-openbsd \
+    nftables \
     ngrep \
     nmap \
     nmap-nping \
+    openssl \
     py-crypto \
     py2-virtualenv \
     python2 \
@@ -54,9 +57,6 @@ RUN wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linu
 # Installing calicoctl
 ARG CALICOCTL_VERSION=v3.3.1
 RUN wget https://github.com/projectcalico/calicoctl/releases/download/${CALICOCTL_VERSION}/calicoctl && chmod +x calicoctl && mv calicoctl /usr/local/bin
-
-# Netgen
-ADD netgen.sh /usr/local/bin/netgen
 
 # Settings
 ADD motd /etc/motd

@@ -29,7 +29,11 @@ Cool thing about namespaces is that you can switch between them. You can enter a
 
 **Kubernetes:** If you want to spin up a throw away container for debugging.
 
-`$ kubectl run tmp-shell --rm -i --tty --image nicolaka/netshoot -- /bin/bash`
+`$ kubectl run --generator=run-pod/v1 tmp-shell --rm -i --tty --image nicolaka/netshoot -- /bin/bash`
+
+And if you want to spin up a container on the host's network namespace.
+
+`$ kubectl run tmp-shell --generator=run-pod/v1 --rm -i --tty --overrides='{"spec": {"hostNetwork": true}}'  --image nicolaka/netshoot  -- /bin/bash`
 
 **Network Problems:** Many network issues could result in application performance degradation. Some of those issues could be related to the underlying networking infrastructure(underlay). Others could be related to misconfiguration at the host or Docker level. Let's take a look at common networking issues:
 
@@ -46,47 +50,50 @@ To troubleshoot these issues, `netshoot` includes a set of powerful tools as rec
 
 **Included Packages:** The following packages are included in `netshoot`. We'll go over some with some sample use-cases.
 
-    apache2-utils 
+    apache2-utils
     bash
-    bird 
-    bridge-utils 
-    busybox-extras 
+    bind-tools
+    bird
+    bridge-utils
+    busybox-extras
     calicoctl
-    conntrack-tools 
-    curl 
-    dhcping 
-    drill 
+    conntrack-tools
+    ctop
+    curl
+    dhcping
+    drill
     ethtool
-    file 
-    fping 
-    iftop 
-    iperf 
-    iproute2 
-    iptables 
-    iptraf-ng 
-    iputils 
+    file
+    fping
+    iftop
+    iperf
+    iproute2
+    ipset
+    iptables
+    iptraf-ng
+    iputils
     ipvsadm
-    libc6-compat 
-    liboping 
-    mtr 
-    net-snmp-tools 
-    netcat-openbsd 
-    ngrep 
-    nmap 
-    nmap-nping 
-    nmap-nping 
-    py-crypto 
-    py2-virtualenv 
-    python2 
-    scapy 
-    socat 
-    strace 
-    tcpdump 
-    tcptraceroute 
-    util-linux 
+    libc6-compat
+    liboping
+    mtr
+    net-snmp-tools
+    netcat-openbsd
+    netgen
+    nftables
+    ngrep
+    nmap
+    nmap-nping
+    openssl
+    py-crypto
+    py2-virtualenv
+    python2
+    scapy
+    socat
+    strace
+    tcpdump
+    tcptraceroute
+    util-linux
     vim
-    
-    
 
 ##**Docker EE 2.0 + Kubernetes Use Cases:** 
 Here's a list of use-cases that can help you understand when and how to use this container to solve networking issues in your Docker cluster. Please feel free to add your own use-case where you used `netshoot` to investigate, trouble-shoot, or just learn more about your environment!!!
@@ -625,8 +632,11 @@ br0		8000.0215b8e7deb3	no		vxlan1
  ctop is a free open source, simple and cross-platform top-like command-line tool for monitoring container metrics in real-time. It allows you to get an overview of metrics concerning CPU, memory, network, I/O for multiple containers and also supports inspection of a specific container.
 
  # To get data into ctop, you'll need to bind docker.sock into the netshoot container.
-/ # docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock netshoot
+```
 
+/ # docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nicolaka/netshoot ctop
+
+```
 ![ctop.png](img/ctop.png)
 
 It will display running and existed containers with useful metrics to help troubleshoot resource issues; hit "q" to exit.
